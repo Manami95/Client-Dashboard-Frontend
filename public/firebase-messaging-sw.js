@@ -4,13 +4,14 @@
 importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js")
 importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js")
 
-// Initialize the Firebase app in the service worker
+// Initialize the Firebase app in the service worker with your Firebase project values
+// Note: These values are public and can safely be included in client-side code
 const firebaseApp = firebase.initializeApp({
-  apiKey: self.FIREBASE_API_KEY,
-  authDomain: self.FIREBASE_AUTH_DOMAIN,
-  projectId: self.FIREBASE_PROJECT_ID,
-  messagingSenderId: self.FIREBASE_MESSAGING_SENDER_ID,
-  appId: self.FIREBASE_APP_ID,
+  apiKey: "AIzaSyAAYIEWR-ewTCj-i0U0BquqcCSLJYDDVdY",
+  authDomain: "live-monitoring-system.firebaseapp.com",
+  projectId: "live-monitoring-system",
+  messagingSenderId: "396044271748",
+  appId: "1:396044271748:web:732d8bbfc8e06b7c8582d1"
 })
 
 // Retrieve an instance of Firebase Messaging

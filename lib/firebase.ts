@@ -4,14 +4,14 @@ import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
 import { getDatabase, connectDatabaseEmulator } from "firebase/database"
 import { getStorage, connectStorageEmulator } from "firebase/storage" // Import getStorage
 const firebaseConfig = {
-  apiKey: "AIzaSyAAYIEWR-ewTCj-i0U0BquqcCSLJYDDVdY",
-  authDomain: "live-monitoring-system.firebaseapp.com",
-  databaseURL: "https://live-monitoring-system-default-rtdb.firebaseio.com",
-  projectId: "live-monitoring-system",
-  storageBucket: "live-monitoring-system.firebasestorage.app",
-  messagingSenderId: "396044271748",
-  appId: "1:396044271748:web:732d8bbfc8e06b7c8582d1",
-  measurementId: "G-3R13EZNEJZ",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }
 
 // Initialize Firebase only if it hasn't been initialized already
