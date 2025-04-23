@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Common functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    function isDeveloper() {
+      return isAuthenticated() && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'developer';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function hasPermission(permission) {
+      return isAuthenticated() && 
+        permission in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.permissions;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated();
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+    
+    // Devices collection
+    match /devices/{deviceId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || 
+        isAdmin() || 
+        hasPermission('view:all_devices')
+      );
+      allow create: if isAuthenticated() && (
+        request.resource.data.userId == request.auth.uid || 
+        isAdmin() || 
+        hasPermission('create:devices')
+      );
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || 
+        isAdmin() || 
+        hasPermission('update:devices')
+      );
+      allow delete: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || 
+        isAdmin() || 
+        hasPermission('delete:devices')
+      );
+    }
+    
+    // Device readings collection
+    match /deviceReadings/{readingId} {
+      allow read: if isAuthenticated() && (
+        resource.data.deviceId in get(/databases/$(database)/documents/devices).where('userId', '==', request.auth.uid).data.id || 
+        isAdmin() || 
+        hasPermission('view:all_readings')
+      );
+      allow create: if isAuthenticated() && (
+        request.resource.data.deviceId in get(/databases/$(database)/documents/devices).where('userId', '==', request.auth.uid).data.id || 
+        isAdmin() || 
+        hasPermission('create:readings')
+      );
+      allow update: if isAdmin() || isDeveloper();
+      allow delete: if isAdmin();
+    }
+    
+    // Companies collection
+    match /companies/{companyId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
+    // Sync logs collection
+    match /syncLogs/{logId} {
+      allow read: if isAdmin() || isDeveloper();
+      allow write: if isAdmin() || isDeveloper();
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
