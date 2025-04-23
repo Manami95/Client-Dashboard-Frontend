@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { collection, getDocs, query, where } from "firebase/firestore"
-
-import { db } from "@/lib/firebase"
+// Firebase imports commented out for deployment
+// import { collection, getDocs, query, where } from "firebase/firestore"
+// import { db } from "@/lib/firebase"
 
 // In a production environment, this would use Twilio SDK
 // For now, we'll simulate sending SMS notifications
@@ -15,11 +15,8 @@ export async function POST(request: Request) {
     // 2. Get their phone numbers
     // 3. Send SMS to all recipients
 
-    // Simulate getting users who should receive this notification
-    const usersRef = collection(db, "users")
-    const usersSnapshot = await getDocs(query(usersRef, where("notificationPreferences.smsEnabled", "==", true)))
-
-    const userCount = usersSnapshot.size
+    // Mock data - simulating 2 users who would receive SMS notifications
+    const userCount = 2
     console.log(`Sending SMS notification to ${userCount} users`)
 
     // Check if Twilio credentials are available

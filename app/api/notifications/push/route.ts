@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
-import { collection, getDocs, query, where } from "firebase/firestore"
-
-import { db } from "@/lib/firebase"
+// Firebase imports commented out for deployment
+// import { collection, getDocs, query, where } from "firebase/firestore"
+// import { db } from "@/lib/firebase"
 
 // In a production environment, this would use firebase-admin SDK
 // For now, we'll simulate sending push notifications
@@ -15,11 +15,8 @@ export async function POST(request: Request) {
     // 2. Get their FCM tokens
     // 3. Send push notifications to all registered devices
 
-    // Simulate getting users who should receive this notification
-    const usersRef = collection(db, "users")
-    const usersSnapshot = await getDocs(query(usersRef, where("notificationPreferences.pushEnabled", "==", true)))
-
-    const userCount = usersSnapshot.size
+    // Mock data - simulating 3 users who would receive notifications
+    const userCount = 3
     console.log(`Sending push notification to ${userCount} users`)
 
     // In a real application, you would use firebase-admin to send push notifications
