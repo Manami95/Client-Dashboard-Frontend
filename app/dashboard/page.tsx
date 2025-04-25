@@ -13,13 +13,15 @@ import {
   Gauge,
   BarChart3,
   Bell,
+  Database,
 } from "lucide-react"
 import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore"
 
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/providers/auth-provider"
 import { useDevices } from "@/providers/device-provider"
-import { LiveDataDisplay } from "@/components/live-data-display" // Import our new component
+import { LiveDataDisplay } from "@/components/live-data-display" // Live data component
+import { LastDataSummary } from "@/components/last-data-summary" // Import our last data summary component
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -518,10 +520,29 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Right Column - Live Data Display */}
-        <div className="md:col-span-8">
+        {/* Right Column - Data Display */}
+        <div className="md:col-span-8 space-y-6">
+          {/* Last Data Summary Card */}
           {selectedDevice ? (
-            // Use our new LiveDataDisplay component
+            <LastDataSummary deviceId={selectedDevice.id} />
+          ) : (
+            <Card className="border-2 border-primary/20 shadow-lg overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-900">
+                <CardTitle>Last Sensor Reading</CardTitle>
+                <CardDescription>Select a device to view the last data</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center justify-center py-6 text-center">
+                <Database className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-4" />
+                <h3 className="text-xl font-medium">No Device Selected</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">
+                  Please select a device to view the most recent data from Firebase
+                </p>
+              </CardContent>
+            </Card>
+          )}
+          
+          {/* Live Data Display */}
+          {selectedDevice ? (
             <LiveDataDisplay deviceId={selectedDevice.id} />
           ) : (
             <Card className="border-2 border-primary/20 shadow-lg overflow-hidden h-full">

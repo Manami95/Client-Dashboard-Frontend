@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app"
-import { getFirestore, collection, doc, setDoc, Timestamp } from "firebase/firestore"
+import { getFirestore, collection, doc, setDoc } from "firebase/firestore"
 
 // Initialize Firebase (use your own config)
 const firebaseConfig = {
@@ -15,7 +15,7 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 // User ID to associate data with
-const userId = "YOUR_USER_ID" // Replace with actual user ID
+const userId = "current_user" // Using a reliable test ID that your app can recognize from your Firebase Auth
 
 // Generate random number within range
 function randomInRange(min: number, max: number) {
@@ -39,8 +39,8 @@ async function generateCompanies() {
     numberOfIndustries: 5,
     userId: userId,
     location: "Mumbai, India",
-    createdAt: Timestamp.fromDate(new Date()),
-    updatedAt: Timestamp.fromDate(new Date()),
+    createdAt: new Date().toISOString(), // Changed from Timestamp.fromDate(new Date())
+    updatedAt: new Date().toISOString(), // Changed from Timestamp.fromDate(new Date())
   })
 
   console.log("Company created:", companyId)
@@ -85,10 +85,10 @@ async function generateDevices(companyId: string) {
       ...device,
       userId: userId,
       companyId: companyId,
-      installationDate: Timestamp.fromDate(randomDate(365)),
-      lastMaintenance: Timestamp.fromDate(randomDate(90)),
-      createdAt: Timestamp.fromDate(new Date()),
-      updatedAt: Timestamp.fromDate(new Date()),
+      installationDate: new Date(randomDate(365)).toISOString(), // Changed from Timestamp.fromDate()
+      lastMaintenance: new Date(randomDate(90)).toISOString(), // Changed from Timestamp.fromDate()
+      createdAt: new Date().toISOString(), // Changed from Timestamp.fromDate()
+      updatedAt: new Date().toISOString(), // Changed from Timestamp.fromDate()
     })
 
     console.log("Device created:", device.id)
@@ -105,7 +105,7 @@ async function generateSensorReadings(deviceIds: string[]) {
     // Generate current reading
     const currentReading = {
       deviceId,
-      timestamp: Timestamp.fromDate(new Date()),
+      timestamp: new Date().toISOString(), // Changed from Timestamp.fromDate()
       pH: randomInRange(6.0, 9.0),
       BOD: randomInRange(5, 40),
       COD: randomInRange(50, 300),
@@ -127,7 +127,7 @@ async function generateSensorReadings(deviceIds: string[]) {
 
       const reading = {
         deviceId,
-        timestamp: Timestamp.fromDate(date),
+        timestamp: new Date(date).toISOString(), // Changed from Timestamp.fromDate()
         pH: randomInRange(6.0, 9.0),
         BOD: randomInRange(5, 40),
         COD: randomInRange(50, 300),
@@ -176,7 +176,7 @@ async function generateAlerts(deviceIds: string[]) {
         threshold: alertType.threshold,
         type: alertType.type,
         status: "active",
-        timestamp: Timestamp.fromDate(new Date()),
+        timestamp: new Date().toISOString(), // Changed from Timestamp.fromDate()
       }
 
       await setDoc(doc(alertsCollection), alert)

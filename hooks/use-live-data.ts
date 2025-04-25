@@ -88,6 +88,7 @@ export function useLiveData(deviceId?: string) {
         // Get the most recent document
         const docSnapshot = sortedDocs[0]
         const data = docSnapshot.data()
+        console.log("LiveSensorReading: " + data);
 
         return {
           id: docSnapshot.id,

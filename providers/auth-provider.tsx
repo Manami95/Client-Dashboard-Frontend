@@ -138,7 +138,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
+      // Clear all state first
+      setUser(null)
+      setUserProfile(null)
+      setNeedsOnboarding(false)
+      
+      // Then sign out from Firebase
       await firebaseSignOut(auth)
+      
+      console.log('User successfully signed out')
+      
+      // Clear any local storage items related to the user (if any)
+      localStorage.removeItem('lastActiveDevice')
+      localStorage.removeItem('userSettings')
+      
+      // The useEffect with onAuthStateChanged will also trigger and update the state
     } catch (error) {
       console.error("Error signing out:", error)
       throw error

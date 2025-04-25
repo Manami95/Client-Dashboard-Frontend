@@ -29,7 +29,7 @@ import { initFirebaseMessaging } from "@/lib/init-firebase-messaging"
 import { useNotifications } from "@/hooks/use-notifications"
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const { user, userProfile, loading, needsOnboarding, setOnboardingComplete, signOut } = useAuth()
+  const { user, userProfile, loading, needsOnboarding, setOnboardingComplete, logout } = useAuth()
   const { notifications, unreadCount } = useNotifications()
   const router = useRouter()
   const pathname = usePathname()
@@ -57,7 +57,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }, [user])
 
   const handleLogout = async () => {
-    await signOut()
+    try {
+      await logout()
+      // Force navigation to login page after logout
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
   }
 
   const handleOnboardingComplete = async () => {

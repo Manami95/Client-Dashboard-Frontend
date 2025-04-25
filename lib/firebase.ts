@@ -1,25 +1,59 @@
-import { initializeApp, getApps } from "firebase/app"
-import { getAuth, connectAuthEmulator } from "firebase/auth"
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
-import { getDatabase, connectDatabaseEmulator } from "firebase/database"
-import { getStorage, connectStorageEmulator } from "firebase/storage" // Import getStorage
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+import { initializeApp, getApps, FirebaseApp } from "firebase/app"
+import { getAuth, connectAuthEmulator, Auth } from "firebase/auth"
+import { getFirestore, connectFirestoreEmulator, Firestore } from "firebase/firestore"
+import { getDatabase, connectDatabaseEmulator, Database } from "firebase/database"
+import { getStorage, connectStorageEmulator, FirebaseStorage } from "firebase/storage" // Import getStorage
+
+// Default fallback configuration in case environment variables are not available
+const defaultConfig = {
+  apiKey: "AIzaSyAAYIEWR-ewTCj-i0U0BquqcCSLJYDDVdY",
+  authDomain: "live-monitoring-system.firebaseapp.com",
+  databaseURL: "https://live-monitoring-system-default-rtdb.firebaseio.com",
+  projectId: "live-monitoring-system",
+  storageBucket: "live-monitoring-system.firebasestorage.app",
+  messagingSenderId: "396044271748",
+  appId: "1:396044271748:web:732d8bbfc8e06b7c8582d1",
+  measurementId: "G-3R13EZNEJZ",
 }
 
-// Initialize Firebase only if it hasn't been initialized already
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0]
-const auth = getAuth(app)
-const db = getFirestore(app)
-const realtimeDb = getDatabase(app)
-const storage = getStorage(app) // Initialize Firebase Storage
+// Use environment variables if available, otherwise use default values
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || defaultConfig.apiKey,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || defaultConfig.authDomain,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || defaultConfig.databaseURL,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || defaultConfig.projectId,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || defaultConfig.storageBucket,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || defaultConfig.messagingSenderId,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || defaultConfig.appId,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || defaultConfig.measurementId,
+}
+
+// Initialize Firebase with proper types
+let app: FirebaseApp;
+let auth: Auth;
+let db: Firestore;
+let realtimeDb: Database;
+let storage: FirebaseStorage;
+
+// Try to initialize Firebase, and provide mock implementations if it fails
+try {
+  // Initialize Firebase only if it hasn't been initialized already
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+  db = getFirestore(app);
+  realtimeDb = getDatabase(app);
+  storage = getStorage(app); // Initialize Firebase Storage
+} catch (error) {
+  console.error("Firebase initialization error:", error);
+  
+  // Create mock implementations to prevent app from crashing
+  // This allows the app to run even if Firebase is not properly configured
+  const mockApp = {} as any;
+  auth = {} as any;
+  db = {} as any;
+  realtimeDb = {} as any;
+  storage = {} as any;
+}
 
 // Check if we're in development mode and use emulators if needed
 if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === "true") {
@@ -29,4 +63,6 @@ if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_USE_FIREBA
   connectStorageEmulator(storage, "localhost", 9199)
 }
 
+// Export Firebase instances with their respective types
 export { app, auth, db, realtimeDb, storage }
+export type { FirebaseApp, Auth, Firestore, Database, FirebaseStorage }

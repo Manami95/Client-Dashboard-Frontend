@@ -5,7 +5,11 @@
   },
   "hosting": {
     "public": "public",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
         "source": "**",
@@ -31,6 +35,14 @@
     },
     "ui": {
       "enabled": true
-    }
+  
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "singleProjectMode": true
+  },
+  "database": {
+    "rules": "database.rules.json"
   }
 }
